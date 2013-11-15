@@ -1,9 +1,9 @@
 {
   "name": "pagination-mini",
   "description": "Paginate cursors in just a few lines of code.",
-  "homepage": "https://github.com/huyinghuan/meteor-pagination",
-  "author": "Evan Tann",
+  "homepage": "https://github.com/huyinghuan/meteor-pagination-mini",
+  "author": "Ec <ec.huyinghuan@gmail.com>",
   "version": "0.0.1",
-  "git": "https://github.com/huyinghuan/meteor-pagination.git",
+  "git": "https://github.com/huyinghuan/meteor-pagination-mini.git",
   "packages": {}
 }
