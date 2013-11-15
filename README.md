@@ -1,6 +1,6 @@
 Meteor Pagination
 ==============================================
-
+The project github:https://github.com/huyinghuan/meteor-pagination-mini.git
 The project come from https://github.com/airlok/meteor-pagination cloning.
 Thanks for @airlok 
 
