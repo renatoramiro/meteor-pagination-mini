@@ -1,61 +1,47 @@
-Pagination = function() {
-  var _style = 'one-of-x';
-  var _currentPage = 1;
-  var _perPage = 10;
-}
-
-// Accessible functions
-Pagination.prototype.links = function(prependRoute, cursorCount, options) {
-  var self = this;
-
-  prependRoute = prependRoute.toString();
-  self._setOptions(options);
-  var totalPages = self.totalPages(cursorCount, self.perPage());
-
-  if (self._checkVars(self.currentPage(), totalPages))
-    return self._createHTML(prependRoute, self.currentPage(), totalPages);
-}
-
-Pagination.prototype.collection = function(cursor, options) {
+/*
+*
+*seletor  Tyep:String  a dom id;
+*options  Type:Object  [optional parameter]
+*
+*/
+Pagination = function(selector,options){
+  this._selector = "#"+selector;
+  this._head = "_pager_"+selector;
+  this._currentCount = 0;//init  
+  this._perPage = 10 ;//init    
+  this._currentPage = 1;//init  
+  this._totalPages = 0;//init  
   this._setOptions(options);
-  var perPage = this.perPage();
-  var currentPage = this.currentPage();
-
-  return cursor.slice((currentPage - 1) * perPage, currentPage * perPage);
+  Session.set(this._head,{
+    limit:this._perPage,
+    skip:(this._currentPage-1)*this._perPage
+  });
+  window[this._head+"_pagination"] = this;
 }
 
-Pagination.prototype.totalPages = function(cursorCount, perPage) {
-  var totalPages, remainder;
-
-  remainder = cursorCount / perPage % 1
-  if (remainder !== 0)
-    totalPages = cursorCount / perPage - remainder + 1;
-  else
-    totalPages = cursorCount / perPage
-  return totalPages;
+Pagination.prototype.skip = function() {
+  return Session.get(this._head);
 }
 
 // Getter and setter functions
-Pagination.prototype._setOptions = function(options) {
+Pagination.prototype._setOptions = function(options){
   if (options) {
     this.currentPage(options.currentPage);
     this.perPage(options.perPage);
-    this.style(options.style);
   }
 }
 
-Pagination.prototype.style = function(style) {
-  if (style)
-    return this._style = style;
-  else
-    return this._style;
-}
-
 Pagination.prototype.currentPage = function(currentPage) {
-  if (currentPage)
+  if (currentPage){
+    if(typeof currentPage !== "number"){
+      throw new Error("the currentPage must be a number");
+    }
+    if(this._totalPages && this._currentPage > this._totalPages){
+      throw new Error("currentPage is big than totalPages");
+    }
     return this._currentPage = currentPage;
-  else
-    return this._currentPage;
+  }
+  return this._currentPage;
 }
 
 Pagination.prototype.perPage = function(perPage) {
@@ -65,69 +51,83 @@ Pagination.prototype.perPage = function(perPage) {
     return this._perPage;
 }
 
-// Internal, don't use
-Pagination.prototype._checkVars = function(currentPage, totalPages) {
-  if (totalPages <= 0 || currentPage <= 0 || !currentPage || !totalPages)
-    throw new Error('Error: Illegal current page or total pages');
-  if (currentPage > totalPages || currentPage === 0)
-    throw new Error('Error: Current page cannot be less than total pages and cannot equal 0');
+Pagination.prototype.totalPages = function(cursorCount) {
+  this._currentCount = cursorCount;
+  if(!cursorCount){
+    return this._totalPages;
+  }
+  var remainder;
+  var perPage = this._perPage;
+  remainder = cursorCount / perPage % 1
+  if (remainder !== 0){
+    return this._totalPages = cursorCount / perPage - remainder + 1;
+  }
+  return this._totalPages = cursorCount / perPage
+}
+
+Pagination.prototype._checkVars = function() {
+  if (typeof this._totalPages !== "number")
+      throw new Error('Error: Illegal  total pages');
   return true;
 }
 
-Pagination.prototype._createHTML = function(prependRoute, currentPage, totalPages) {
-  var html = '';
-
-  var trailingSlash = /\/$/;
-  if (!trailingSlash.test(prependRoute))
-    prependRoute += '/';
-
-  var prevPage = parseInt(currentPage) - 1;
-  var nextPage = parseInt(currentPage) + 1;
-  if (this._style === 'bootstrap')
-    return this._bootstrap(prependRoute, currentPage, totalPages, prevPage, nextPage, html);
-  else
-    return this._oneOfX(prependRoute, currentPage, totalPages, prevPage, nextPage, html);
+Pagination.prototype.go = function(currentPage) {
+  if (currentPage){
+      if(typeof currentPage !== "number"){
+        console.warn("the currentPage must be a number");
+        return;
+      }
+      if(this._totalPages && this._currentPage > this._totalPages){
+        console.warn("currentPage is big than totalPages");
+      }
+      this._currentPage = currentPage;
+      Session.set(this._head,{
+        limit:this._perPage,
+        skip:(this._currentPage-1)*this._perPage
+      })
+    }
 }
 
-// Style 'one-of-x'
-Pagination.prototype._oneOfX = function(prependRoute, currentPage, totalPages, prevPage, nextPage, html) {
-  html += '<div class="pagination">';
-  if (totalPages !== 1) {
-    if (currentPage > 1) {
-      html += '<a href="' + prependRoute + prevPage + '">Prev</a> ';
-    }
-    html += currentPage + ' of ' + totalPages;
-    if (currentPage < totalPages) {
-      html += ' <a href="' + prependRoute + nextPage + '">Next</a>';
-    }
-  } else {
-    // No buttons
-    html += currentPage + ' of ' + totalPages;
+Pagination.prototype.destroy = function() {
+  delete window[this._head+"_pagination"];
+  return Session.set(this._head,null);
+}
+
+Pagination.prototype.create = function(cursorCount){
+  this.totalPages(cursorCount);
+  
+  if(this._checkVars()){
+    var html = this._bootstrap();
+    $(this._selector).empty().append($(html));
   }
-  html += '</div>';
-  return html;
 }
 
 // Style 'bootstrap'
-Pagination.prototype._bootstrap = function(prependRoute, currentPage, totalPages, prevPage, nextPage, html) {
-  html += '<div class="pagination-cont"><ul class="pagination">';
-  if (totalPages !== 1) {
-    if (currentPage > 1) {
-      html += '<li><a href="' + prependRoute + prevPage + '">«</a></li>';
-    }
-    for (var i = currentPage - 1; (i <= totalPages) && (i - currentPage < 4); i++) {
-      if (i < 1) continue;
-      if (i !== currentPage)
-        html += '<li><a href="' + prependRoute + i + '">' + i + '</a></li>';
-      else
-        html += '<li class="active"><a href="' + prependRoute + i + '">' + i + '</a></li>';
-    }
-    if (currentPage < totalPages) {
-      html += '<li><a href="' + prependRoute + nextPage + '">»</a></li>';
+Pagination.prototype._bootstrap = function() {
+  var html = "";
+  if(!this._currentCount){ //如果总记录为0
+    return html = "No thing";
+  }
+//  var forwordPage =  this._currentCount === 1 ? 1 : this._currentCount-1;
+//  var nextPage = 
+  var data ='data-head="'+this._head+'" onclick="Pagination.goto(this)"';// 
+  html += '<ul>';
+  html += '<li><a href="#"'+data+' data-page="1">«</a></li>';
+  for (var i = 1;i < this._totalPages + 1; i++) {
+    if(i !== this._currentPage){
+        html += '<li><a href="#" '+data+'data-page="'+i+'">'+i+'</a></li>'
+    }else{
+      html += '<li class="active"><a href="#" '+data+'data-page="'+i+'">'+i+'</a></li>'
     }
   }
-  html += '</ul></div>';
+  html += '<li><a href="#" '+data+'data-page="'+this._totalPages+'">»</a></li>';
+  
+  html += '</ul>';
   return html;
 }
 
-Pagination = new Pagination();
+Pagination.goto = function(item){
+  var head = $(item).data("head");
+  var page = +$(item).data("page");
+  window[head+"_pagination"].go(page);
+}

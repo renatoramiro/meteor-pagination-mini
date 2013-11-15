@@ -4,10 +4,4 @@ Package.describe({
 
 Package.on_use(function (api, where) {
   api.add_files('pagination.js', 'client');
-  api.export('Pagination');
-});
-
-Package.on_test(function (api) {
-  api.use(['pagination', 'tinytest', 'test-helpers'], 'client');
-  api.add_files('pagination_tests.js', 'client');
 });
