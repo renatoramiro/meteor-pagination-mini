@@ -1,12 +1,15 @@
 Meteor Pagination-mini
 ==============================================
-The project github:https://github.com/huyinghuan/meteor-pagination-mini.git
+The project github:https://github.com/huyinghuan/meteor-pagination-mini.git.
+
 The project come from https://github.com/airlok/meteor-pagination cloning.
+
 Thanks for @airlok .
 
 #### this package is  depends jquery and bootstrap
 
 So when you create a meteor application .make sure:
+
 ```shell
 meteor add jquery
 meteor add bootstrap
@@ -22,25 +25,25 @@ This enables simple pagination in your Meteor app. There are two key parts:
 Displaying only the current page's cursor results is easy. This will enable you to insert just those results into each page, and it automatically changes when the page changes. 
 
 ### Installation
-there is a easy way to get pagination-mini.
-pagination-mini can be installed with [https://github.com/oortcloud/meteorite/](Meteorite). From inside a Meteorite-managed app:
+  There is a easy way to get pagination-mini.
+  pagination-mini can be installed with [Meteorite](https://github.com/oortcloud/meteorite/). From inside a Meteorite-managed app:
+
 ```js
   mrt add pagination-mini
 ```
 
-Maybe you don't want to use meteorite,there is other way.
-You can download [https://github.com/huyinghuan/meteor-pagination-mini/archive/v0.0.2.zip](the project)
-then uzip  and cp them into your meteor application's "packages" folder.
-just like this :(please uzip it at first)
+  Maybe you don't want to use meteorite,there is other way.
+  You can download [the project](https://github.com/huyinghuan/meteor-pagination-mini/archive/v0.0.2.zip) then uzip and cp them into your meteor application's "packages" folder.
+  just like this :(please uzip it at first)
+
 ```shell
 meteor create helloworld
 cd helloworld
 mkdir packages
 cp /home/meteor-pagination-mini /home/helloworld/packages/pagination-mini
 ```
-and then you should edit the helloworld/.meteor/packages  (maybe .meteor is a hidden folder) and add "pagination-mini" at last line.
-
-at last ,the packages file like this:
+  and then you should edit the helloworld/.meteor/packages  (maybe .meteor is a hidden folder) and add "pagination-mini" at last line.
+  at last ,the packages file like this:
 
 ```
 # Meteor packages used by this project, one per line.
@@ -83,7 +86,7 @@ Template.test.destroyed = function(){
   page.destroy();
 }
 ```
-if you want to get a demo . see [https://github.com/huyinghuan/pagination-mini-test](it)
+if you want to get a demo , see [it](https://github.com/huyinghuan/pagination-mini-test)
 
 ## API
 
