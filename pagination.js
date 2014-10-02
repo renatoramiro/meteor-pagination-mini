@@ -108,8 +108,7 @@ Pagination.prototype._bootstrap = function() {
     return html = "No thing";
   }
   var data ='data-head="'+this._head+'" onclick="Pagination.goto(this)"';//
-  html += '<div class="pagination">' ;
-  html += '<ul>';
+  html += '<ul class="pagination">';
   html += '<li><a href="#"'+data+' data-page="1">«</a></li>';
   for (var i = 1;i < this._totalPages + 1; i++) {
     if(i !== this._currentPage){
@@ -120,7 +119,6 @@ Pagination.prototype._bootstrap = function() {
   }
   html += '<li><a href="#" '+data+'data-page="'+this._totalPages+'">»</a></li>';
   html += '</ul>';
-  html += '</div>'
   return html;
 }
 

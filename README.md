@@ -1,19 +1,16 @@
 Meteor Pagination-mini
 ==============================================
-The project github:https://github.com/huyinghuan/meteor-pagination-mini.git.
+The project github:https://github.com/renatoramiro/meteor-pagination-mini.git.
+
+The project come from https://github.com/huyinghuan/meteor-pagination-mini.git.
 
 The project come from https://github.com/airlok/meteor-pagination cloning.
 
 Thanks for @airlok .
 
-#### this package is  depends jquery and bootstrap
+#### this package is  depends jquery and bootstrap 3
 
 So when you create a meteor application .make sure:
-
-```shell
-meteor add jquery
-meteor add bootstrap
-```
 
 This enables simple pagination in your Meteor app. There are two key parts:
 
